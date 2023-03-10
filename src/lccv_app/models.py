@@ -1,14 +1,5 @@
 from django.db import models
 
-class Aluno(models.Model):
-    id_aluno = models.BigAutoField(primary_key=True)
-    nome = models.CharField(max_length=255)
-    cpf = models.CharField(max_length=11)
-    rg = models.CharField(max_length=8)
-    matricula = models.CharField(max_length=8)
-    telefone = models.CharField(max_length=11)
-    email = models.EmailField()
-
 class Professor(models.Model):
     id_professor = models.BigAutoField(primary_key=True)
     nome = models.CharField(max_length=255)
@@ -18,6 +9,9 @@ class Professor(models.Model):
     telefone = models.CharField(max_length=11)
     email = models.EmailField()
 
+    def __str__(self):
+        return self.nome
+
 class Disciplina(models.Model):
     id_disciplina = models.BigAutoField(primary_key=True)
     id_professor = models.ForeignKey(Professor, on_delete=models.CASCADE)
@@ -25,6 +19,23 @@ class Disciplina(models.Model):
     codigo = models.CharField(max_length=7)
     carga_horaria = models.IntegerField()
     ementa = models.TextField(blank=True) # ver a questao do clob!
+
+    def __str__(self):
+        return f"{self.codigo} - {self.nome}"
+
+class Aluno(models.Model):
+    id_aluno = models.BigAutoField(primary_key=True)
+    nome = models.CharField(max_length=255)
+    cpf = models.CharField(max_length=11)
+    rg = models.CharField(max_length=8)
+    matricula = models.CharField(max_length=8)
+    telefone = models.CharField(max_length=11)
+    email = models.EmailField()
+    disciplinas = models.ManyToManyField(Disciplina)
+
+    def __str__(self):
+        return self.nome
+
 
 class PlanoAula(models.Model):
     id_plano_aula = models.BigAutoField(primary_key=True)
@@ -61,13 +72,6 @@ class AtividadeAluno(models.Model):
     id_atividade = models.ForeignKey(Atividade, on_delete=models.CASCADE)
     id_aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE)
     nota = models.FloatField(blank=True)
-
-class DisciplinaAluno(models.Model):
-    id_matricula = models.BigAutoField(primary_key=True)
-    id_aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE)
-    id_disciplina = models.ForeignKey(Disciplina, on_delete=models.CASCADE)
-    # nota = models.FloatField(default=0.0) nao salvei campo de notas pq existe redundancia uma vez que eh
-    # so o somatorio da tabela AtividadeAluno, na api irei retornar a informacao dessa forma
 
 class FrequenciaAluno(models.Model):
     id = models.BigAutoField(primary_key=True)
