@@ -12,6 +12,9 @@ class Professor(models.Model):
     def __str__(self):
         return self.nome
 
+    class Meta:
+        verbose_name_plural = 'Professores';
+
 class Disciplina(models.Model):
     id_disciplina = models.BigAutoField(primary_key=True)
     id_professor = models.ForeignKey(Professor, on_delete=models.CASCADE)
@@ -31,7 +34,6 @@ class Aluno(models.Model):
     matricula = models.CharField(max_length=8)
     telefone = models.CharField(max_length=11)
     email = models.EmailField()
-    disciplinas = models.ManyToManyField(Disciplina)
 
     def __str__(self):
         return self.nome
@@ -44,6 +46,12 @@ class PlanoAula(models.Model):
     conteudo = models.TextField()
     metodo = models.CharField(max_length=50)
     dia = models.DateField()
+    class Meta:
+        verbose_name = 'Plano de aula'
+        verbose_name_plural = 'Planos de aula'
+
+    def __str__(self):
+        return self.tema_aula
 
 class Atividade(models.Model):
     TIPOS_ATIVIDADES = [
@@ -60,6 +68,9 @@ class Atividade(models.Model):
     id_disciplina = models.ForeignKey(Disciplina, on_delete=models.CASCADE)
     id_plano_aula = models.ForeignKey(PlanoAula, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.atividade
+
 class Frequencia(models.Model):
     id_frequencia = models.BigAutoField(primary_key=True)
     id_materia = models.ForeignKey(Disciplina, on_delete=models.CASCADE)
@@ -72,9 +83,24 @@ class AtividadeAluno(models.Model):
     id_atividade = models.ForeignKey(Atividade, on_delete=models.CASCADE)
     id_aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE)
     nota = models.FloatField(blank=True)
+    class Meta:
+        verbose_name = 'Avaliar aluno'
+        verbose_name_plural = 'Avaliações de alunos'
 
 class FrequenciaAluno(models.Model):
     id = models.BigAutoField(primary_key=True)
     id_aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE)
     id_frequencia = models.ForeignKey(Frequencia, on_delete=models.CASCADE)
-    presenca = models.BooleanField(default=True) # ver a questao do booelan ou char(1)
+    presente = models.BooleanField(default=True) # ver a questao do booelan ou char(1)
+    class Meta:
+        verbose_name = 'Frequencia de alunos'
+        verbose_name_plural = 'Atribuir frequencia a alunos'
+
+class DisciplinaAluno(models.Model):
+    id_matricula = models.BigAutoField(primary_key=True)
+    id_aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE)
+    id_disciplina = models.ForeignKey(Disciplina, on_delete=models.CASCADE)
+    nota = models.FloatField(default=0.0)
+    class Meta:
+        verbose_name = 'Matricula de aluno em disciplina'
+        verbose_name_plural = 'Matriculas de alunos em disciplina'
