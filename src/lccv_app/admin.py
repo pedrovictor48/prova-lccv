@@ -2,7 +2,7 @@ from django.contrib import admin
 from django import forms
 
 # Register your models here.
-from .models import Aluno, Professor, Atividade, Disciplina, AtividadeAluno, DisciplinaAluno, FrequenciaAluno, PlanoAula
+from .models import Aluno, Professor, Atividade, Disciplina, AtividadeAluno, DisciplinaAluno, FrequenciaAluno, PlanoAula, Frequencia
 
 # inlines
 class DisciplinaAlunoInline(admin.TabularInline):
@@ -15,11 +15,13 @@ class AtividadeAlunoInline(admin.TabularInline):
     model = AtividadeAluno
     extra = 1
 
+class FrequenciaAlunoInline(admin.TabularInline):
+    model = FrequenciaAluno
+    extra = 1
+
 #forms
 @admin.register(Aluno)
 class AlunoAdmin(admin.ModelAdmin):
-    display = ('nome')
-    name = 'bla'
     inlines = [DisciplinaAlunoInline, AtividadeAlunoInline]
 
 @admin.register(Atividade)
@@ -38,6 +40,9 @@ class DisciplinaAdmin(admin.ModelAdmin):
 class PlanoAulaAdmin(admin.ModelAdmin):
     pass
 
+@admin.register(Frequencia)
+class FrequenciaAdmin(admin.ModelAdmin):
+    inlines = [FrequenciaAlunoInline]
 
 # signals para lidar com o negocio do somatorio
 from django.db.models.signals import post_delete, post_save
@@ -46,14 +51,14 @@ from django.dispatch import receiver
 @receiver(post_delete, sender=AtividadeAluno)
 def decrementarNota(sender, instance, using, **kwargs):
     t = DisciplinaAluno.objects.filter(id_disciplina=instance.id_atividade.id_disciplina).filter(id_aluno=instance.id_aluno.id_aluno).get()
+    #quando removo eu decremento da nota
     t.nota -= instance.nota
     t.save()
-    print(t)
 
 
 @receiver(post_save, sender=AtividadeAluno)
 def decrementarNota(sender, instance, using, **kwargs):
     t = DisciplinaAluno.objects.filter(id_disciplina=instance.id_atividade.id_disciplina).filter(id_aluno=instance.id_aluno.id_aluno).get()
+    #quando adiciono eu incremento
     t.nota += instance.nota
     t.save()
-    print(t)

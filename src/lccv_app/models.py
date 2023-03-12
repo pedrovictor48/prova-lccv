@@ -87,6 +87,9 @@ class AtividadeAluno(models.Model):
         verbose_name = 'Avaliar aluno'
         verbose_name_plural = 'Avaliações de alunos'
 
+    def __str__(self):
+        return ''
+
 class FrequenciaAluno(models.Model):
     id = models.BigAutoField(primary_key=True)
     id_aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE)
@@ -96,6 +99,9 @@ class FrequenciaAluno(models.Model):
         verbose_name = 'Frequencia de alunos'
         verbose_name_plural = 'Atribuir frequencia a alunos'
 
+    def __str__(self):
+        return ''
+
 class DisciplinaAluno(models.Model):
     id_matricula = models.BigAutoField(primary_key=True)
     id_aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE)
@@ -104,3 +110,6 @@ class DisciplinaAluno(models.Model):
     class Meta:
         verbose_name = 'Matricula de aluno em disciplina'
         verbose_name_plural = 'Matriculas de alunos em disciplina'
+
+    def __str__(self):
+        return ''
