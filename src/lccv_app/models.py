@@ -82,7 +82,7 @@ class AtividadeAluno(models.Model):
     id = models.BigAutoField(primary_key=True)
     id_atividade = models.ForeignKey(Atividade, on_delete=models.CASCADE)
     id_aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE)
-    nota = models.FloatField(blank=True)
+    nota = models.FloatField(blank=True, null=True)
     class Meta:
         verbose_name = 'Avaliar aluno'
         verbose_name_plural = 'Avaliações de alunos'

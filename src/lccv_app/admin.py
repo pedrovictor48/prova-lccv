@@ -52,7 +52,9 @@ from django.dispatch import receiver
 def decrementarNota(sender, instance, using, **kwargs):
     t = DisciplinaAluno.objects.filter(id_disciplina=instance.id_atividade.id_disciplina).filter(id_aluno=instance.id_aluno.id_aluno).get()
     #quando removo eu decremento da nota
-    t.nota -= instance.nota
+    if not instance.nota is None:
+        #existe a possibilidade do campo estar vazio, por isso checo antes se nao eh None
+        t.nota -= instance.nota
     t.save()
 
 
@@ -60,5 +62,6 @@ def decrementarNota(sender, instance, using, **kwargs):
 def decrementarNota(sender, instance, using, **kwargs):
     t = DisciplinaAluno.objects.filter(id_disciplina=instance.id_atividade.id_disciplina).filter(id_aluno=instance.id_aluno.id_aluno).get()
     #quando adiciono eu incremento
-    t.nota += instance.nota
+    if not instance.nota is None:
+        t.nota += instance.nota
     t.save()
